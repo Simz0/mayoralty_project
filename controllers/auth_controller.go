@@ -8,6 +8,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary Registration
+// @Tags Auth
+// @Description Это рут для регистрации. Принимает на вход JSON из двух параметров: username и password
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.SuccessResponse уведомление об успешной регистрации "User register  successed"
+// @Failure 400 {object} models.FailResponse уведомление об ошибочности формы регистрации
+// @Failure 500 {object} models.FailResponse
+// @Router /auth/registration [POST]
 func Registration(c *gin.Context) {
 	var req struct {
 		Username string
@@ -26,6 +35,14 @@ func Registration(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "success", "message": "User register  successed"})
 }
 
+// @Summary Login
+// @Tags Auth
+// @Description Это рут для логина. Также как и при регистрации принимает на вход JSON из двух параметров
+// @Accept json
+// @Success 200 {object} models.SuccessResponse
+// @Failure 400 {object} models.FailResponse уведомление об ошибочности формы авторизации
+// @Failure 500 {object} models.FailResponse
+// @Router /auth/registration [post]
 func Login(c *gin.Context) {
 	var req struct {
 		Username string

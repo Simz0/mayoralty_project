@@ -5,11 +5,13 @@ import (
 	"NSK_mayoralty_app/middlewares"
 
 	"github.com/gin-gonic/gin"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
-
 	auth := r.Group("/auth")
 	{
 		auth.POST("/registration", controllers.Registration)
@@ -28,6 +30,11 @@ func SetupRouter() *gin.Engine {
 	{
 		sessions.GET("/start", controllers.StartSession)
 		sessions.GET("/stop", controllers.StopSession)
+	}
+	swagger := r.Group("/swagger")
+	swagger.Use(middlewares.CorsUse)
+	{
+		swagger.GET("/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
 	return r
 }

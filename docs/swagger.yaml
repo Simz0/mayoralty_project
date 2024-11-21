@@ -1,0 +1,199 @@
+basePath: /
+definitions:
+  models.DataFormat:
+    properties:
+      data:
+        type: string
+      intData:
+        type: integer
+    type: object
+  models.FailResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  models.SuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/models.DataFormat'
+      message:
+        type: string
+      success:
+        type: string
+    type: object
+  models.Work_points:
+    description: Модель для работы с точками
+    properties:
+      created_at:
+        description: Время создания записи
+        example: "2023-11-22T12:00:00Z"
+        type: string
+      deleted_at:
+        description: Время мягкого удаления записи
+        example: "2023-11-22T13:00:00Z"
+        type: string
+      id:
+        description: ID записи
+        example: 1
+        type: integer
+      latitude:
+        description: Широта точки
+        example: 55.7512
+        type: number
+      longitude:
+        description: Долгота точки
+        example: 37.7749
+        type: number
+      session_id:
+        description: Идентификатор сессии
+        example: 42
+        type: integer
+      updated_at:
+        description: Время последнего обновления записи
+        example: "2023-11-22T12:30:00Z"
+        type: string
+    type: object
+host: undefined
+info:
+  contact: {}
+  title: Проект для мэрии Новосибирска по отслеживанию и визуализации геоточек и маршрутов
+  version: "1.0"
+paths:
+  /auth/registration:
+    post:
+      consumes:
+      - application/json
+      description: Это рут для логина. Также как и при регистрации принимает на вход
+        JSON из двух параметров
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.FailResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.FailResponse'
+      summary: Login
+      tags:
+      - Auth
+  /points:
+    get:
+      description: Это рут для получения всех точек перемещения работников из базы
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Work_points'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.FailResponse'
+      summary: GetPoints
+      tags:
+      - Points
+    post:
+      consumes:
+      - application/json
+      description: Это рут для загрузки точки для сессии
+      parameters:
+      - description: Данные точки работы
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.Work_points'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.FailResponse'
+      summary: AddPointToSession
+      tags:
+      - Points
+  /points/:pointId:
+    delete:
+      description: Это рут для удаление тестовых или ошибочных точек
+      parameters:
+      - description: ID точки для удаления
+        in: path
+        name: pointId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.FailResponse'
+      summary: RemovePoint
+      tags:
+      - Points
+  /points/:sessionId:
+    get:
+      description: Это рут для получения всех точек перемещения работника за конкретную
+        сессию
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Work_points'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.FailResponse'
+      summary: GetSessionPoints
+      tags:
+      - Points
+  /sessions/start:
+    get:
+      description: 'Это рут для начала сессии. ВАЖНО: не начинать сессию при уже имеющейся
+        открытой сессии!'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.FailResponse'
+      summary: StartSession
+      tags:
+      - Sessions
+  /sessions/stop:
+    get:
+      description: Это рут для закрытия сессии
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.FailResponse'
+      summary: StartSession
+      tags:
+      - Sessions
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: NSK_Mayoralty
+    type: apiKey
+swagger: "2.0"

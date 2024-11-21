@@ -20,7 +20,7 @@ func StopSession(userID uint) error {
 
 	result := database.DB.Where("user_id = ? AND stop_at = ? ", userID, time.Time{}).First(&session)
 
-	session.Stop_at = time.Now()
+	session.StopAt = time.Now()
 
 	database.DB.Save(&session)
 

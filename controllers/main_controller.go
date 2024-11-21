@@ -9,6 +9,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary GetPoints
+// @Tags Points
+// @Description Это рут для получения всех точек перемещения работников из базы
+// @Success 200 {object} models.Work_points
+// @Failure 500 {object} models.FailResponse
+// @Router /points [get]
 func GetPoints(c *gin.Context) {
 	points, err := services.GetAllPoints()
 
@@ -20,6 +26,12 @@ func GetPoints(c *gin.Context) {
 	c.JSON(http.StatusOK, points)
 }
 
+// @Summary GetSessionPoints
+// @Tags Points
+// @Description Это рут для получения всех точек перемещения работника за конкретную сессию
+// @Success 200 {object} models.Work_points
+// @Failure 500 {object} models.FailResponse
+// @Router /points/:sessionId [get]
 func GetSessionsPoints(c *gin.Context) {
 	sessionId, err := strconv.Atoi(c.Param("sessionId"))
 	if err != nil {
@@ -35,6 +47,14 @@ func GetSessionsPoints(c *gin.Context) {
 	}
 }
 
+// @Summary AddPointToSession
+// @Tags Points
+// @Description Это рут для загрузки точки для сессии
+// @Accept json
+// @Param input body models.Work_points true "Данные точки работы"
+// @Success 200 {object} models.SuccessResponse
+// @Failure 500 {object} models.FailResponse
+// @Router /points [post]
 func AddPointToSession(c *gin.Context) {
 	var newPoint models.Work_points
 	if err := c.ShouldBindBodyWithJSON(&newPoint); err != nil {
@@ -48,6 +68,13 @@ func AddPointToSession(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "success"})
 }
 
+// @Summary RemovePoint
+// @Tags Points
+// @Description Это рут для удаление тестовых или ошибочных точек
+// @Param pointId path int true "ID точки для удаления"
+// @Success 200 {object} models.SuccessResponse
+// @Failure 500 {object} models.FailResponse
+// @Router /points/:pointId [delete]
 func RemovePointFromSession(c *gin.Context) {
 	pointId, err := strconv.Atoi("pointId")
 

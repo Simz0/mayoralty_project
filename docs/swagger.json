@@ -1,0 +1,292 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Проект для мэрии Новосибирска по отслеживанию и визуализации геоточек и маршрутов",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "undefined",
+    "basePath": "/",
+    "paths": {
+        "/auth/registration": {
+            "post": {
+                "description": "Это рут для логина. Также как и при регистрации принимает на вход JSON из двух параметров",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.FailResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.FailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/points": {
+            "get": {
+                "description": "Это рут для получения всех точек перемещения работников из базы",
+                "tags": [
+                    "Points"
+                ],
+                "summary": "GetPoints",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Work_points"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.FailResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Это рут для загрузки точки для сессии",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Points"
+                ],
+                "summary": "AddPointToSession",
+                "parameters": [
+                    {
+                        "description": "Данные точки работы",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Work_points"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.FailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/points/:pointId": {
+            "delete": {
+                "description": "Это рут для удаление тестовых или ошибочных точек",
+                "tags": [
+                    "Points"
+                ],
+                "summary": "RemovePoint",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID точки для удаления",
+                        "name": "pointId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.FailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/points/:sessionId": {
+            "get": {
+                "description": "Это рут для получения всех точек перемещения работника за конкретную сессию",
+                "tags": [
+                    "Points"
+                ],
+                "summary": "GetSessionPoints",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Work_points"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.FailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/sessions/start": {
+            "get": {
+                "description": "Это рут для начала сессии. ВАЖНО: не начинать сессию при уже имеющейся открытой сессии!",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Sessions"
+                ],
+                "summary": "StartSession",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.FailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/sessions/stop": {
+            "get": {
+                "description": "Это рут для закрытия сессии",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Sessions"
+                ],
+                "summary": "StartSession",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.FailResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.DataFormat": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "string"
+                },
+                "intData": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.FailResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.SuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/models.DataFormat"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Work_points": {
+            "description": "Модель для работы с точками",
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "description": "Время создания записи",
+                    "type": "string",
+                    "example": "2023-11-22T12:00:00Z"
+                },
+                "deleted_at": {
+                    "description": "Время мягкого удаления записи",
+                    "type": "string",
+                    "example": "2023-11-22T13:00:00Z"
+                },
+                "id": {
+                    "description": "ID записи",
+                    "type": "integer",
+                    "example": 1
+                },
+                "latitude": {
+                    "description": "Широта точки",
+                    "type": "number",
+                    "example": 55.7512
+                },
+                "longitude": {
+                    "description": "Долгота точки",
+                    "type": "number",
+                    "example": 37.7749
+                },
+                "session_id": {
+                    "description": "Идентификатор сессии",
+                    "type": "integer",
+                    "example": 42
+                },
+                "updated_at": {
+                    "description": "Время последнего обновления записи",
+                    "type": "string",
+                    "example": "2023-11-22T12:30:00Z"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "NSK_Mayoralty",
+            "in": "header"
+        }
+    }
+}

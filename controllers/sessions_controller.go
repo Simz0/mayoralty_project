@@ -9,6 +9,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary StartSession
+// @Tags Sessions
+// @Description Это рут для начала сессии. ВАЖНО: не начинать сессию при уже имеющейся открытой сессии!
+// @Produce json
+// @Success 200 {object} models.SuccessResponse
+// @Failure 500 {object} models.FailResponse
+// @Router /sessions/start [get]
 func StartSession(c *gin.Context) {
 	userToken := strings.Split(c.GetHeader("Authorization"), " ")
 	validUser, userID := services.CheckUserToken(userToken[1])
@@ -28,6 +35,13 @@ func StartSession(c *gin.Context) {
 	}
 }
 
+// @Summary StopSession
+// @Tags Sessions
+// @Description Это рут для закрытия сессии
+// @Produce json
+// @Success 200 {object} models.SuccessResponse
+// @Failure 500 {object} models.FailResponse
+// @Router /sessions/stop [get]
 func StopSession(c *gin.Context) {
 	userToken := strings.Split(c.GetHeader("Authorization"), " ")
 	if validUser, UserID := services.CheckUserToken(userToken[1]); !validUser {

@@ -5,14 +5,14 @@ import (
 	"NSK_mayoralty_app/models"
 )
 
-func GetUserId(username string) (uint, error) {
+func GetUserById(ID string) (models.User, error) {
 	var user models.User
 
-	result := database.DB.Where("username = ?", username).First(&user)
+	result := database.DB.Where("id = ?", ID).First(&user)
 
 	if result.Error == nil {
-		return user.ID, nil
+		return user, nil
 	} else {
-		return 0, result.Error
+		return user, result.Error
 	}
 }
